@@ -16,6 +16,9 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class HotelOverzichtController {
     @FXML private Label hotelnaamLabel;
@@ -56,12 +59,15 @@ public class HotelOverzichtController {
         ObservableList<String> boekingen = FXCollections.observableArrayList();
         LocalDate localDate = overzichtDatePicker.getValue();
 
+
         for(Boeking boeking : hotel.getBoekingen()){
-            if(localDate.equals(boeking.getAankomstDatum())){
-                boekingen.add("Van: " + boeking.getAankomstDatum() + " ,tot: " + boeking.getVertrekDatum() + " , kamer: " + boeking.getKamer().getKamerNummer() + " , naam: " + boeking.getBoeker().getNaam() +"\n" );
+            List<LocalDate> localDates = boeking.getAankomstDatum().datesUntil(boeking.getVertrekDatum().plusDays(1)).toList();
+            for(LocalDate l : localDates){
+                if(localDate.equals(l)){
+                    boekingen.add("Van: " + boeking.getAankomstDatum() + " ,tot: " + boeking.getVertrekDatum() + " , kamer: " + boeking.getKamer().getKamerNummer() + " , naam: " + boeking.getBoeker().getNaam() +"\n" );
+                }
             }
         }
-
 
         boekingenListView.setItems(boekingen);
     }

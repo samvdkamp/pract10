@@ -2,6 +2,7 @@ package hotel.userinterface;
 
 import hotel.model.Hotel;
 import hotel.model.KamerType;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -9,6 +10,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
 import java.time.LocalDate;
 
@@ -37,26 +39,29 @@ public class BoekingenController {
     }
 
     public void boek() throws Exception {
-        LocalDate localDate = LocalDate.now();
-        LocalDate vertrekDate = Vertrek.getValue();
-        LocalDate aankomstDate = Aankomst.getValue();
-        if(!Naam.getText().isEmpty()&&!Adres.getText().isEmpty()&&Vertrek.getValue() != null&&Aankomst.getValue() !=null&&!Kamertype.getSelectionModel().isEmpty()){
-            if(aankomstDate.isAfter(localDate)&&vertrekDate.isAfter(aankomstDate)) {
+        try {
+            LocalDate localDate = LocalDate.now();
+            LocalDate vertrekDate = Vertrek.getValue();
+            LocalDate aankomstDate = Aankomst.getValue();
+            if (!Naam.getText().isEmpty() && !Adres.getText().isEmpty() && Vertrek.getValue() != null && Aankomst.getValue() != null && !Kamertype.getSelectionModel().isEmpty()) {
+                if (aankomstDate.isAfter(localDate) && vertrekDate.isAfter(aankomstDate)) {
                     hotel.voegBoekingToe(Aankomst.getValue(), Vertrek.getValue(), Naam.getText(), Adres.getText(), Kamertype.getValue());
 
-            }
-            else{
-                String melding = "De data is ongeldig";
-                Alert alert = new Alert(Alert.AlertType.INFORMATION, melding);
+                } else {
+                    String melding = "De data is ongeldig";
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION, melding);
+                    alert.show();
+                }
+            } else {
+                String melding2 = "U heeft niet alles ingevuld!";
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, melding2);
                 alert.show();
             }
-        }
-        else{
-            String melding2 = "U heeft niet alles ingevuld!";
-            Alert alert = new Alert(Alert.AlertType.INFORMATION, melding2);
+        } catch(Exception e){
+            String melding3 = e.getMessage();
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, melding3);
             alert.show();
         }
+
     }
-
-
 }
